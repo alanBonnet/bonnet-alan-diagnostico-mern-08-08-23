@@ -1,25 +1,20 @@
-import { getTareas, urlBase } from "../services/tasks.service"
-
+import { useState } from "react"
+import { agregarTarea, getTareas } from "../services/tasks.service"
 /* eslint-disable react/prop-types */
 const ModalAddTask = ({ setModalHidden, modalHidden, setTareas }) => {
-  const agregarTarea = async ({ title, description }) => {
-    const fetchAddTask = await fetch(`${urlBase}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, description })
-    })
-    const addTask = await fetchAddTask.json();
-    if (addTask.message.includes('correctamente')) {
-      getTareas({ setTareasLista: setTareas })
-    }
-    return 0
+  const [addTask, setAddTask] = useState({
+    title:"exampleTaskTitle",
+    description:"exampleTaskDescription",
+  })
+  const handleInput = e => {
+    setAddTask({...addTask,[e.target.name]: e.target.value})
   }
   const handleSubmit = e => {
     e.preventDefault()
     const formData = new FormData(e.target);
-    const description = formData.get("description");
     const title = formData.get("title");
-    agregarTarea({ title, description })
+    const description = formData.get("description");
+    if(title.trim().length>6 && description.trim().length > 6) agregarTarea({ title, description },getTareas, setTareas);
   }
   return (
     <div id="authentication-modal" tabIndex="-1" aria-hidden="true" className={` ${modalHidden ? "hidden" : ""} overflow-x-hidden overflow-y-hidden h-full max-h-full max-w-full col-span-4 md:col-span-4 lg:col-span-1`}>
@@ -35,11 +30,13 @@ const ModalAddTask = ({ setModalHidden, modalHidden, setTareas }) => {
             <form className="space-y-6" action="#" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="title" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre de la tarea</label>
-                <input type="text" name="title" id="title" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Nombre tarea" required />
+                <input type="text" name="title" id="title" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Nombre tarea" required min="6" onChange={handleInput} />
+                <label htmlFor="title" className={`bg-red-300 text-lg ring-2 ring-red-500 rounded-lg px-2 ${addTask?.title?.length>6?"hidden":""}`}>Título de tarea muy corto</label>
               </div>
               <div>
                 <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Descripción de la tarea</label>
-                <textarea type="text" name="description" id="description" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Descripción tarea" required />
+                <textarea type="text" name="description" id="description" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Descripción tarea" required min="6" onChange={handleInput}/>
+                <label htmlFor="title" className={`bg-red-300 text-lg ring-2 ring-red-500 rounded-lg px-2 ${addTask?.description?.length>6?"hidden":""}`}>Descripción de la tarea muy corto</label>
               </div>
 
               <button type="submit" className="w-full text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Agregar</button>

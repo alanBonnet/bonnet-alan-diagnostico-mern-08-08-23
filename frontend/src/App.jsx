@@ -20,7 +20,7 @@ function App() {
       </div>
 
       {/* <!-- Modal toggle --> */}
-      {tareasLista.length>0 && tareasLista[0]._id != "001aError" &&
+      {tareasLista?.[0]?._id != "001aError" &&
         <BTNModal modalHidden={modalHidden} setModalHidden={setModalHidden} /> }
       <div className="grid auto-cols-auto md:grid-cols-4 gap-2 mx-3">
 
@@ -28,11 +28,11 @@ function App() {
         <ModalAddTask modalHidden={modalHidden} setModalHidden={setModalHidden} setTareas={setTareasLista} />
 
         <div className={`mr-3 w-full grid ${!modalHidden ? 'md:col-span-4 lg:col-span-3' : ''}  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 col-span-4`}>
-          {tareasLista.length > 0 && tareasLista.map(tarea => (
+          {tareasLista?.length > 0 && tareasLista.map(tarea => (
             <Card key={tarea._id} id={tarea._id} title={tarea.title} description={tarea.description} completed={tarea.completed} setterTasks={setTareasLista} />
 
           ))}
-          {tareasLista.length == 0 && <p className="text-lg p-5">No se encuentran tareas</p>}
+          {tareasLista?.length == 0 && <p className="text-lg p-5">No se encuentran tareas</p>}
         </div>
       </div>
     </>
