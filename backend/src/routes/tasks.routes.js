@@ -4,6 +4,6 @@ const TaskRouter = Router();
 
 TaskRouter.get('/tasks', getTasks);
 TaskRouter.post('/tasks', postTask);
-TaskRouter.delete('/tasks/del/:idTask', deteleTask);
-TaskRouter.patch('/tasks/mark/:idTask', markTask);
+TaskRouter.delete('/tasks/:idTask', deteleTask);
+TaskRouter.patch('/tasks/:idTask', markTask);
 export default TaskRouter;

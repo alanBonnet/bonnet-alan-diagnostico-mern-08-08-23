@@ -6,9 +6,10 @@ export const getTasks = async (_req, res) => {
         const Tasks = await TaskModel.find({
             isActive: true
         });
-        if (!Tasks.length) {
-            return res.status(404).json({
-                message: 'No se encuentran tareas registradas.'
+        if (!Tasks.length > 0) {
+            return res.status(202).json({
+                message: 'No se encuentran tareas registradas.',
+                tasks: []
             });
         }
         return res.json({
@@ -18,7 +19,7 @@ export const getTasks = async (_req, res) => {
     } catch (err) {
         console.log(err.message);
         return res.status(500).json({
-            msg: 'Internal Server Error'
+            message: 'Internal Server Error'
         });
     }
 };
@@ -30,7 +31,7 @@ export const postTask = async (req, res) => {
             description
         } = req.body;
         if (title.length < 6 || description.length < 6) {
-            return res.status(404).json({
+            return res.status(205).json({
                 message: 'No se registró la tarea, titulo o descripción muy corto.'
             });
         }
@@ -45,7 +46,7 @@ export const postTask = async (req, res) => {
     } catch (err) {
         console.log(err.message);
         return res.status(500).json({
-            msg: 'Internal Server Error'
+            message: 'Internal Server Error'
         });
     }
 };
@@ -64,20 +65,21 @@ export const deteleTask = async (req, res) => {
             ]
         });
         if (!task) {
-            return res.status(404).json({
+            return res.status(204).json({
                 message: 'La tarea ya no existe.'
             });
         }
         await task.updateOne({
             isActive: false
         });
-        return res.status(201).json({
-            message: 'Tarea eliminada correctamente.'
+        return res.json({
+            message: 'Tarea eliminada correctamente.',
+            tasks: []
         });
     } catch (err) {
         console.log(err.message);
         return res.status(500).json({
-            msg: 'Internal Server Error'
+            message: 'Internal Server Error'
         });
     }
 };
@@ -97,20 +99,20 @@ export const markTask = async (req, res) => {
         });
 
         if (!task) {
-            return res.status(404).json({
+            return res.status(204).json({
                 message: 'La tarea ya no existe.'
             });
         }
         await task.updateOne({
             completed: !task.completed
         });
-        return res.status(201).json({
+        return res.json({
             message: 'Tarea marcada/desmarcada correctamente.'
         });
     } catch (err) {
         console.log(err.message);
         return res.status(500).json({
-            msg: 'Internal Server Error'
+            message: 'Internal Server Error'
         });
     }
 };
